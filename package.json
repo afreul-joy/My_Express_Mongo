@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/afreul-joy/My_Express_Mongo#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "mongoose": "^7.1.0",
     "nodemon": "^2.0.22"
   }
 }
