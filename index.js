@@ -28,6 +28,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  chip: {
+    type: String,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,
@@ -60,6 +64,7 @@ app.post("/products", async (req, res) => {
       title: req.body.title,
       price: req.body.price,
       description: req.body.description,
+      chip: req.body.chip,
     });
 
     const productData = await newProduct.save(); // save or insert data in database
@@ -111,7 +116,7 @@ app.get("/products/:id", async (req, res) => {
     else {
         res.status(400).send({
             success : false, 
-            message: "Product not found"
+            message: "Product not found" 
         });
     }
   } catch (error) {
@@ -120,7 +125,36 @@ app.get("/products/:id", async (req, res) => {
     });
   }
 });
-
+// Get: /products/search/:key -> Return search results 
+app.get("/products/search/:key", async (req, res) => {
+    try {
+      const key = req.params.key;
+      const product = await products.find({
+        $or: [
+          { title: { $regex: key, $options: "i" } },
+          { chip: { $regex: key, $options: "i" } }
+        ]
+      });
+  
+      if (product.length > 0) {
+        res.status(200).send({         
+          success: true,
+          message: "Return search results",
+          data: product
+        });
+      } else {
+        res.status(404).send({
+          success: false,
+          message: "No matching products found"
+        });
+      }
+    } catch (error) {
+      res.status(500).send({
+        message: error.message
+      });
+    }
+  });
+  
 
 
 app.get("/", (req, res) => {
