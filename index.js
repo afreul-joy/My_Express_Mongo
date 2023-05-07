@@ -7,7 +7,13 @@ const port = process.env.PORT || 3000;
 app.use(express.json()); // for handling json data use middleware
 app.use(express.urlencoded({extended: true})); 
 
-// create product schema
+
+/*  #################################
+         CONNECTING TO MONGODB
+    #################################
+*/
+
+//  ***create product schema / STRUCTURE/ SHAPE 
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -27,10 +33,11 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-// create product model
-const products = mongoose.model("products", productSchema); // products is collection name
+//  ***create product model or collection/table
+const products = mongoose.model("products", productSchema); // products is collection/table name
+ 
 
-// connecting to database
+// ***connecting to database
 const connectDB = async () => {
   try {
     await mongoose.connect("mongodb://127.0.0.1:27017/testProductDB"); // testproductDb is database name
@@ -39,28 +46,28 @@ const connectDB = async () => {
     console.error("Failed to connect to the database:", error);
   }
 };
+/*  #################################
+        CRUD OPERATION STARTING
+    #################################
+*/
 
+// Create Document/Row/Record
 app.post("/products", async (req, res) => {
   try {
-    // get data from request body
-    const title = req.body.title;
-    const price = req.body.price;
-    const description = req.body.description;
-
-    //  storing data in database
+    //  storing data/document in database
     const newProduct = new products({
-      title: title,
-      price: price,
-      description: description,
+      title: req.body.title,
+      price:  req.body.price,
+      description: req.body.description,
     });
-
-    const productData = await newProduct.save();
+ 
+    const productData = await newProduct.save();  // save or insert data in database
     res.status(201).send(productData);
   } catch (error) {
     res.status(500).send({
       message: error.message,
     });
-  }
+  } 
 });
 
 app.get("/", (req, res) => {
@@ -69,7 +76,7 @@ app.get("/", (req, res) => {
 
 app.listen(port, async () => {
   console.log(`Server is running at http://localhost:${port}`);
-  await connectDB();
+  await connectDB();   // Connection function called when server is running
 });
 
 // Database -> collection ( table) -> document  (record)
