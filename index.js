@@ -47,11 +47,11 @@ const connectDB = async () => {
   }
 };
 /*  #################################
-        CRUD OPERATION STARTING
+        CRUD OPERATION STARTING 
     #################################
 */
 
-// Create Document/Row/Record
+// ***CREATE ------------Document/Row/Record
 app.post("/products", async (req, res) => {
   try {
     //  storing data/document in database
@@ -70,6 +70,11 @@ app.post("/products", async (req, res) => {
   } 
 });
 
+// ***READ  ------------Document/Row/Record
+app.get("/products", async (req,res)={
+
+})
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
@@ -80,3 +85,10 @@ app.listen(port, async () => {
 });
 
 // Database -> collection ( table) -> document  (record)
+
+// GET: /products -> Return all the products
+// Get: /products/:id -> Return a specific product
+// POST: /products -> Create a new product
+// PUT: /products/:id -> Update a specific product based on id
+// DELETE: /products/:id -> Delete a product based on id
+
