@@ -14,13 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 
 //--------connecting to database----------
 const connectDB = async () => {
-    try {
-      await mongoose.connect("mongodb://127.0.0.1:27017/testProductDB"); // testproductDb is database name
-      console.log("Connected to the database");
-    } catch (error) {
-      console.error("Failed to connect to the database:", error);
-    }
-  };
+  try {
+    await mongoose.connect("mongodb://127.0.0.1:27017/testProductDB"); // testproductDb is database name
+    console.log("Connected to the database");
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+  }
+};
 
 //--------create product schema / STRUCTURE/ SHAPE----------
 const productSchema = new mongoose.Schema({
@@ -48,7 +48,6 @@ const productSchema = new mongoose.Schema({
 
 //------------create product model or collection/table--------------
 const products = mongoose.model("products", productSchema); // products is collection/table name
-
 
 /*  #################################
         CRUD OPERATION STARTING 
@@ -80,19 +79,18 @@ app.post("/products", async (req, res) => {
 // GET: /products -> Return all the products
 app.get("/products", async (req, res) => {
   try {
-    const product = await products.find();  
-    if(product) {
-        res.status(200).send({         
-            success : true,         // ***response extra information
-            message: "Return all the product",  
-            data: product
-        });
-    }
-    else {
-        res.status(400).send({
-            success : false, 
-            message: "Product not found"
-        });
+    const product = await products.find();
+    if (product) {
+      res.status(200).send({
+        success: true, // ***response extra information
+        message: "Return all the product",
+        data: product,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product not found",
+      });
     }
   } catch (error) {
     res.status(500).send({
@@ -105,19 +103,18 @@ app.get("/products", async (req, res) => {
 app.get("/products/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const product = await products.findOne({_id:id});   
-    if(product) {
-        res.status(200).send({         
-            success : true,         // ***response extra information
-            message: "Return a single product",  
-            data: product
-        });
-    }
-    else {
-        res.status(400).send({
-            success : false, 
-            message: "Product not found" 
-        });
+    const product = await products.findOne({ _id: id });
+    if (product) {
+      res.status(200).send({
+        success: true, // ***response extra information
+        message: "Return a single product",
+        data: product,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product not found",
+      });
     }
   } catch (error) {
     res.status(500).send({
@@ -125,36 +122,36 @@ app.get("/products/:id", async (req, res) => {
     });
   }
 });
-// Get: /products/search/:key -> Return search results 
-app.get("/products/search/:key", async (req, res) => {
-    try {
-      const key = req.params.key;
-      const product = await products.find({
-        $or: [
-          { title: { $regex: key, $options: "i" } },
-          { chip: { $regex: key, $options: "i" } }
-        ]
+
+
+//------------- Search implemented ---------
+app.get("/search", async (req, res) => {
+  try {
+    const price = parseFloat(req.query.price); // Parse the price query parameter to a number
+    console.log(price); // Log the price value to the console
+    
+    const product = await products.find({ price: { $gt: price } });
+
+    if (product) {
+      res.status(200).send({
+        success: true,
+        message: "Return search results",
+        data: product,
       });
-  
-      if (product.length > 0) {
-        res.status(200).send({         
-          success: true,
-          message: "Return search results",
-          data: product
-        });
-      } else {
-        res.status(404).send({
-          success: false,
-          message: "No matching products found"
-        });
-      }
-    } catch (error) {
-      res.status(500).send({
-        message: error.message
+    } else {
+      res.status(404).send({
+        success: false,
+        message: "No matching products found",
       });
     }
-  });
-  
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
+
+
 
 
 app.get("/", (req, res) => {
