@@ -123,14 +123,16 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-
 //------------- Search implemented ---------
 app.get("/search", async (req, res) => {
   try {
-    const price = parseFloat(req.query.price); // Parse the price query parameter to a number
-    console.log(price); // Log the price value to the console
-    
-    const product = await products.find({ price: { $gt: price } });
+    let price = parseFloat(req.query.price); // Parse the price query parameter to a number
+    let product;
+    if (price) {
+      product = await products.find({ price: { $gt: price } }); // only return products specified products
+    } else {
+      product = await products.find(); // show all products
+    }
 
     if (product) {
       res.status(200).send({
@@ -150,9 +152,6 @@ app.get("/search", async (req, res) => {
     });
   }
 });
-
-
-
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
