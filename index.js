@@ -36,6 +36,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  rating: {
+    type: Number,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
@@ -126,10 +130,13 @@ app.get("/products/:id", async (req, res) => {
 //------------- Search implemented ---------
 app.get("/search", async (req, res) => {
   try {
-    let price = parseFloat(req.query.price); // Parse the price query parameter to a number
+    const price = parseFloat(req.query.price); // Parse the price query parameter to a number
+    const rating = parseFloat(req.query.rating);
     let product;
-    if (price) {
-      product = await products.find({ price: { $gt: price } }); // only return products specified products
+    if (price && rating) {
+      product = await products.find({
+        $and: [{ price: { $lte: price } },{ rating: { $gte : rating } }],
+      }); // only return products specified products
     } else {
       product = await products.find(); // show all products
     }
