@@ -159,6 +159,29 @@ app.get("/search", async (req, res) => {
     });
   }
 });
+//----------------- Sort Data ----------------
+app.get("/meals", async (req, res) => {
+  try {
+    //*** 1=ascending sort|| -1=descending sort
+    const product = await products.find().sort({ price: -1 }); // sorting by price
+    if (product) {
+      res.status(200).send({
+        success: true,
+        message: "Return all the product",
+        data: product,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
 //------------- Counting Total Numbers Of Data ---------
 app.get("/service", async (req, res) => {
   try {
@@ -175,6 +198,64 @@ app.get("/service", async (req, res) => {
       res.status(400).send({
         success: false,
         message: "Product not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
+// *** ------------UPDATE------------Document/Row/Record
+app.put("/service/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    // in update method: 1st need id, 2nd set new value for this update;
+    const updatedProduct = await products.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          title: req.body.title,   // set new value for this update
+          rating: req.body.rating,
+        },
+      },
+      {new:true} // showing updated data in api
+    );
+    if (updatedProduct) {
+      res.status(200).send({
+        success: true,
+        message: "Updated successfully",
+        data: updatedProduct,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product was not updated with this id",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
+// *** ------------DELETE------------Document/Row/Record
+app.delete("/service/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const productDelete = await products.findByIdAndDelete({ _id: id }); // showing details of deleted product
+    // const productDelete = await products.deleteOne({_id: id}); // delete normally showing "acknowledgement:true"
+
+    if (productDelete) {
+      res.status(200).send({
+        success: true,
+        message: "Delete successfully",
+        data: productDelete,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product was not deleted with this id",
       });
     }
   } catch (error) {
