@@ -53,12 +53,15 @@ const productSchema = new mongoose.Schema({
 //------------create product model or collection/table--------------
 const products = mongoose.model("products", productSchema); // products is collection/table name
 
-/*  #################################
-        CRUD OPERATION STARTING 
-    #################################
+/* 
+>>>>>>>>>>>>>>>>>>>>>>>> CRUD OPERATION STARTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 */
 
-// ------------CREATE -------------Document/Row/Record
+
+/*  #################################
+                CREATE 
+    #################################
+*/
 // POST: /products -> Create a new product
 app.post("/products", async (req, res) => {
   try {
@@ -79,7 +82,10 @@ app.post("/products", async (req, res) => {
   }
 });
 
-// *** ------------READ------------Document/Row/Record
+/*  #################################
+               READ
+    #################################
+*/
 // GET: /products -> Return all the products
 app.get("/products", async (req, res) => {
   try {
@@ -206,7 +212,11 @@ app.get("/service", async (req, res) => {
     });
   }
 });
-// *** ------------UPDATE------------Document/Row/Record
+
+/*  #################################
+               UPDATE
+    #################################
+*/
 app.put("/service/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -239,7 +249,10 @@ app.put("/service/:id", async (req, res) => {
     });
   }
 });
-// *** ------------DELETE------------Document/Row/Record
+/*  #################################
+               DELETE
+    #################################
+*/
 app.delete("/service/:id", async (req, res) => {
   try {
     const id = req.params.id;
