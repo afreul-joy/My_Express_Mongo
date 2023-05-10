@@ -135,7 +135,7 @@ app.get("/search", async (req, res) => {
     let product;
     if (price && rating) {
       product = await products.find({
-        $and: [{ price: { $lte: price } },{ rating: { $gte : rating } }],
+        $and: [{ price: { $lte: price } }, { rating: { $gte: rating } }],
       }); // only return products specified products
     } else {
       product = await products.find(); // show all products
@@ -151,6 +151,30 @@ app.get("/search", async (req, res) => {
       res.status(404).send({
         success: false,
         message: "No matching products found",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+});
+//------------- Counting Total Numbers Of Data ---------
+app.get("/service", async (req, res) => {
+  try {
+    const product = await products.find();
+    const numberOfProduct = await products.find().countDocuments(); // count the number of documents
+    if (product) {
+      res.status(200).send({
+        success: true, // ***response extra information
+        message: "Return all the product",
+        numberOfProducts: numberOfProduct,
+        data: product,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Product not found",
       });
     }
   } catch (error) {
